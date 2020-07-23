@@ -1,0 +1,73 @@
+digraph {
+
+graph [compound=true]
+
+
+
+subgraph cluster_draw {
+label=draw
+color=cornflowerblue
+fontcolor=cornflowerblue
+to_coord [color=cornflowerblue fontcolor=cornflowerblue]
+to_coord_u32 [color=cornflowerblue fontcolor=cornflowerblue]
+draw_block [color=cornflowerblue fontcolor=cornflowerblue]
+draw_rectangle [color=cornflowerblue fontcolor=cornflowerblue]
+draw_rectangle -> to_coord [color=cornflowerblue]
+}
+
+
+subgraph cluster_direction {
+label = Direction
+color=grey
+fontcolor=grey
+opposite [color=grey fontcolor=grey]
+}
+
+subgraph cluster_snake {
+label = Snake
+Snake_new
+Snake_draw [label = draw color=cornflowerblue fontcolor=cornflowerblue]
+Snake_draw -> {draw_block} [color=cornflowerblue]
+head_position
+move_forward -> {head_position} [color=grey fontcolor=grey]
+head_direction [fontcolor=grey color=grey]
+head_position [color=grey fontcolor=grey]
+next_head -> {head_position} [color=grey]
+restore_tail [color=grey fontcolor=grey]
+overlap_tail [color=grey fontcolor=grey]
+}
+
+subgraph cluster_game {
+label = Game
+Game_new -> {Snake_new}
+key_pressed -> {head_direction, opposite} [color=grey]
+key_pressed -> {update_snake}
+Game_draw [label = draw color=cornflowerblue fontcolor=cornflowerblue]
+Game_draw -> {Snake_draw, draw_block, draw_rectangle} [color=cornflowerblue]
+update -> {restart, add_food, update_snake}
+check_eating -> {head_position, restore_tail} [color=grey]
+check_if_snake_alive -> {next_head}
+check_if_snake_alive -> {overlap_tail} [color=grey]
+add_food -> {overlap_tail} [color=grey]
+update_snake -> {check_if_snake_alive, move_forward, check_eating, Snake_new}
+}
+
+subgraph cluster_main {
+main -> { key_pressed, update }
+main -> {to_coord_u32 } [color=cornflowerblue weight=2]
+main -> {Game_draw } [color=cornflowerblue]
+}
+
+
+subgraph cluster_legend {
+label=Legend
+node [fontsize=9]
+color=none
+main_func
+util_func [color=grey fontcolor=grey]
+draw_func [color=cornflowerblue fontcolor=cornflowerblue]
+}
+
+draw_block -> Game_draw [weight=1 style=invis]
+
+}
