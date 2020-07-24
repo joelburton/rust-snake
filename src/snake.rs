@@ -8,7 +8,8 @@ use Direction::*;
 
 use crate::draw::draw_block;
 
-const SNAKE_COLOR: Color = [0.0, 0.8, 0.0, 1.0]; // green
+// green
+const SNAKE_COLOR: Color = [0.0, 0.8, 0.0, 1.0];
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum Direction {
@@ -22,10 +23,10 @@ impl Direction {
     /// Returns opposite direction of one given
     pub fn opposite(&self) -> Direction {
         match *self {
-            Direction::Up => Direction::Down,
-            Direction::Down => Direction::Up,
-            Direction::Left => Direction::Right,
-            Direction::Right => Direction::Left,
+            Up => Down,
+            Down => Up,
+            Left => Right,
+            Right => Left,
         }
     }
 }

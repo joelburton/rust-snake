@@ -1,17 +1,25 @@
 use piston_window::*;
 use piston_window::types::Color;
 use rand::{Rng, thread_rng};
-use rand::prelude::ThreadRng;
 
 use crate::draw::{draw_block, draw_rectangle};
 use crate::snake::{Direction, Snake};
 
+// food: red
 const FOOD_COLOR: Color = [0.8, 0.0, 0.0, 1.0];
+
+// board around board: black
 const BORDER_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
+
+// translucent red overlay on loss
 const GAME_OVER_COLOR: Color = [0.9, 0.0, 0.0, 0.5];
 
+// How often to force a move, in seconds
 const MOVING_PERIOD: f64 = 0.1;
+
+// How long before a lost game restarts
 const RESTART_TIME: f64 = 1.0;
+
 
 pub struct Game {
     snake: Snake,
@@ -24,10 +32,12 @@ pub struct Game {
     height: i32,
 
     game_over: bool,
+    // how much longer to wait until moving
     waiting_time: f64,
 }
 
 impl Game {
+    /// Create new game with a snake and food
     pub fn new(width: i32, height: i32) -> Game {
         let mut game = Game {
             snake: Snake::new(2, width - 2, 2, height - 2),
@@ -127,17 +137,17 @@ impl Game {
     /// Adds a random food item to board
     fn add_food(&mut self) {
         let mut rng = thread_rng();
-        let mut new_x = rng.gen_range(1, self.width - 1);
-        let mut new_y = rng.gen_range(1, self.width - 1);
-        println!("{} {}", new_x, new_y);
-        // don't want snake to overlap apple
-        while self.snake.overlap_snake(new_x, new_y) {
-            new_x = rng.gen_range(1, self.width - 1);
-            new_y = rng.gen_range(1, self.width - 1);
+        let mut x:i32 = -1;
+        let mut y: i32 = -1;
+
+        // find legal spot on board not part of snake
+        while x == -1 || y == -1 || self.snake.overlap_snake(x, y) {
+            x = rng.gen_range(1, self.width - 1);
+            y = rng.gen_range(1, self.width - 1);
         }
 
-        self.food_x = new_x;
-        self.food_y = new_y;
+        self.food_x = x;
+        self.food_y = y;
         self.food_exists = true;
     }
 
