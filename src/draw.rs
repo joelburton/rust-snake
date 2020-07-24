@@ -1,5 +1,7 @@
-use piston_window::{Context, G2d, rectangle};
+use piston_window::{Context, G2d, circle_arc, rectangle};
 use piston_window::types::Color;
+use std::f64::consts::{PI};
+
 
 const BLOCK_SIZE: f64 = 25.0;
 
@@ -16,10 +18,19 @@ pub fn draw_block(color: Color, x: i32, y: i32, con: &Context, g: &mut G2d) {
 
     rectangle(
         color,
-        [gui_x, gui_y, BLOCK_SIZE, BLOCK_SIZE],
+        [gui_x, gui_y,BLOCK_SIZE,BLOCK_SIZE],
         con.transform,
         g,
     );
+    // circle_arc(
+    //     color,
+    //     BLOCK_SIZE / 4 as f64,
+    //     0.0,
+    //      PI * 1.99999999999,
+    //     [gui_x + 6.0, gui_y + 6.0, BLOCK_SIZE / 2.1 as f64, BLOCK_SIZE / 2.1 as f64],
+    //     con.transform,
+    //     g,
+    // );
 }
 
 /// Draw rectangles -- used to make borders around play area
