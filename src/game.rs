@@ -6,7 +6,7 @@ use rand::{thread_rng, Rng};
 use crate::snake::{Direction, Snake};
 use crate::draw::{draw_block, draw_rectangle};
 
-const FOOD_COLOR: Color = [0.8,0.0,0.0,1.0];
+const FOOD_COLOR: Color = [0.8, 0.0, 0.0, 1.0];
 const BORDER_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
 const GAME_OVER_COLOR:Color = [0.9, 0.0, 0.0, 0.5];
 
@@ -107,7 +107,7 @@ impl Game {
         let (head_x, head_y) = self.snake.head_position();
         if self.food_exists && self.food_x == head_x && self.food_y == head_y {
             self.food_exists = false;
-            self.snake.restore_tail();
+            self.snake.grow_snake();
         }
     }
 
@@ -115,7 +115,7 @@ impl Game {
     fn check_if_snake_alive(&self, dir: Option<Direction>) -> bool {
         let (next_x, next_y) = self.snake.next_head(dir);
 
-        if self.snake.overlap_tail(next_x, next_y) {
+        if self.snake.overlap_snake(next_x, next_y) {
             return false;
         }
 
@@ -129,9 +129,9 @@ impl Game {
         let mut new_x = rng.gen_range(1, self.width - 1);
         let mut new_y = rng.gen_range(1, self.width - 1);
         // don't want snake to overlap apple
-        while self.snake.overlap_tail(new_x, new_y) {
+        while self.snake.overlap_snake(new_x, new_y) {
             new_x = rng.gen_range(1, self.width - 1);
-            new_y = rng.gen_range(1, self.width-1);
+            new_y = rng.gen_range(1, self.width - 1);
         }
 
         self.food_x = new_x;

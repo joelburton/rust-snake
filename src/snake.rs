@@ -26,7 +26,11 @@ impl Direction {
     }
 }
 
-#[derive(Clone, Debug)]
+use Direction::*;
+
+/// Board game block
+
+#[derive(Clone)]
 struct Block {
     x: i32,
     y: i32,
@@ -79,10 +83,10 @@ impl Snake {
         let (last_x, last_y) = self.head_position();
 
         let new_block = match self.direction {
-            Direction::Up => Block { x: last_x, y: last_y - 1 },
-            Direction::Down => Block { x: last_x, y: last_y + 1 },
-            Direction::Left => Block { x: last_x - 1, y: last_y },
-            Direction::Right => Block { x: last_x + 1, y: last_y },
+            Up => Block { x: last_x, y: last_y - 1 },
+            Down => Block { x: last_x, y: last_y + 1 },
+            Left => Block { x: last_x - 1, y: last_y },
+            Right => Block { x: last_x + 1, y: last_y },
         };
         self.body.push_front(new_block);
         let removed_block = self.body.pop_back().unwrap();
@@ -105,25 +109,31 @@ impl Snake {
         }
 
         match moving_dir {
-            Direction::Up => (head_x, head_y - 1),
-            Direction::Down => (head_x, head_y + 1),
-            Direction::Left => (head_x - 1, head_y),
-            Direction::Right => (head_x + 1, head_y),
+            Up => (head_x, head_y - 1),
+            Down => (head_x, head_y + 1),
+            Left => (head_x - 1, head_y),
+            Right => (head_x + 1, head_y),
         }
     }
 
-    pub fn restore_tail(&mut self) {
+    /// "Grow" snake
+    pub fn grow_snake(&mut self) {
+        // This just adds a new block at same place as the current tail ---
+        // so when snake moves and the tail is snipped, the current tail
+        // will still be there, so the snake "grows".
         let blk = self.tail.clone().unwrap();
         self.body.push_back(blk);
     }
 
-    pub fn overlap_tail(&self, x: i32, y: i32) -> bool {
-        let mut ch = 0;
+    /// Does cell at given coords intersect with snake?
+    pub fn overlap_snake(&self, x: i32, y: i32) -> bool {
+        let mut idx = 0;
         for block in &self.body {
             if x == block.x && y == block.y { return true; }
 
-            ch += 1;
-            if ch == self.body.len() - 1 { break; }
+            idx += 1;
+            // Don't count the tail; it's ok touch that
+            if idx == self.body.len() - 1 { break; }
         }
         return false;
     }
