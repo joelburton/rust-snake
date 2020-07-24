@@ -27,6 +27,7 @@ impl Direction {
 }
 
 use Direction::*;
+use rand::{thread_rng, Rng};
 
 /// Board game block
 
@@ -47,7 +48,11 @@ pub struct Snake {
 }
 
 impl Snake {
-    pub fn new(x: i32, y: i32) -> Snake {
+    /// Create new snake within coords supplied
+    pub fn new(low_x: i32, high_x:i32, low_y:i32, high_y: i32) -> Snake {
+        let mut rng = thread_rng();
+        let x = rng.gen_range(low_x, high_x - 2);
+        let y = rng.gen_range(low_y, high_y);
         let mut body: LinkedList<Block> = LinkedList::new();
         body.push_back(Block { x: x + 2, y });
         body.push_back(Block { x: x + 1, y });

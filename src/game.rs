@@ -5,6 +5,7 @@ use rand::{thread_rng, Rng};
 
 use crate::snake::{Direction, Snake};
 use crate::draw::{draw_block, draw_rectangle};
+use rand::prelude::ThreadRng;
 
 const FOOD_COLOR: Color = [0.8, 0.0, 0.0, 1.0];
 const BORDER_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
@@ -29,16 +30,18 @@ pub struct Game {
 
 impl Game {
     pub fn new(width: i32, height: i32) -> Game {
-        Game {
-            snake: Snake::new(2, 2),
+        let mut game = Game {
+            snake: Snake::new(2, width - 2, 2, height - 2),
             waiting_time: 0.0,
-            food_exists: true,
-            food_x: 6,
-            food_y: 4,
+            food_exists: false,
+            food_x: 0,
+            food_y: 0,
             width,
             height,
             game_over: false,
-        }
+        };
+        game.add_food();
+        return game;
     }
 
     /// if arrow key pressed, update snake direction & move snake
@@ -125,9 +128,9 @@ impl Game {
     /// Adds a random food item to board
     fn add_food(&mut self) {
         let mut rng = thread_rng();
-
         let mut new_x = rng.gen_range(1, self.width - 1);
         let mut new_y = rng.gen_range(1, self.width - 1);
+        println!("{} {}", new_x, new_y);
         // don't want snake to overlap apple
         while self.snake.overlap_snake(new_x, new_y) {
             new_x = rng.gen_range(1, self.width - 1);
@@ -151,14 +154,11 @@ impl Game {
     }
 
     /// Restart game
-    // FIXME: should we just make a new game?
     fn restart(&mut self) {
-        self.snake = Snake::new(2, 2);
+        self.snake = Snake::new(1, self.width - 2, 1, self.height - 2);
         self.waiting_time = 0.0;
-        self.food_exists = true;
-        self.food_x = 6;
-        self.food_y = 4;
         self.game_over = false;
+        self.add_food();
     }
 }
 
