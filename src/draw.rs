@@ -30,7 +30,7 @@ pub fn draw_rectangle(
     width: i32,
     height: i32,
     con: &Context,
-    g: &mut G2d
+    g: &mut G2d,
 ) {
     let x = to_coord(x);
     let y = to_coord(y);

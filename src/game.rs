@@ -8,10 +8,10 @@ use crate::draw::{draw_block, draw_rectangle};
 
 const FOOD_COLOR: Color = [0.8, 0.0, 0.0, 1.0];
 const BORDER_COLOR: Color = [0.0, 0.0, 0.0, 1.0];
-const GAME_OVER_COLOR:Color = [0.9, 0.0, 0.0, 0.5];
+const GAME_OVER_COLOR: Color = [0.9, 0.0, 0.0, 0.5];
 
-const MOVING_PERIOD:f64 = 0.1;
-const RESTART_TIME:f64 = 1.0;
+const MOVING_PERIOD: f64 = 0.1;
+const RESTART_TIME: f64 = 1.0;
 
 pub struct Game {
     snake: Snake,
@@ -30,7 +30,7 @@ pub struct Game {
 impl Game {
     pub fn new(width: i32, height: i32) -> Game {
         Game {
-            snake: Snake::new(2,2),
+            snake: Snake::new(2, 2),
             waiting_time: 0.0,
             food_exists: true,
             food_x: 6,
@@ -44,7 +44,7 @@ impl Game {
     /// if arrow key pressed, update snake direction & move snake
     pub fn key_pressed(&mut self, key: Key) {
         if self.game_over {
-            return
+            return;
         }
 
         let dir = match key {
@@ -73,9 +73,9 @@ impl Game {
         }
 
         draw_rectangle(BORDER_COLOR, 0, 0, self.width, 1, con, g);
-        draw_rectangle(BORDER_COLOR, 0, self.height-1, self.width, 1, con, g);
+        draw_rectangle(BORDER_COLOR, 0, self.height - 1, self.width, 1, con, g);
         draw_rectangle(BORDER_COLOR, 0, 0, 1, self.height, con, g);
-        draw_rectangle(BORDER_COLOR,self.width-1, 0, 1,self.height, con, g);
+        draw_rectangle(BORDER_COLOR, self.width - 1, 0, 1, self.height, con, g);
 
         if self.game_over {
             draw_rectangle(GAME_OVER_COLOR, 0, 0, self.width, self.height, con, g);
@@ -97,7 +97,7 @@ impl Game {
             self.add_food();
         }
 
-        if self.waiting_time> MOVING_PERIOD {
+        if self.waiting_time > MOVING_PERIOD {
             self.update_snake(None);
         }
     }
