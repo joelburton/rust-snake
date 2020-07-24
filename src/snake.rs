@@ -1,6 +1,10 @@
 use std::collections::LinkedList;
+
 use piston_window::{Context, G2d};
 use piston_window::types::Color;
+use rand::{Rng, thread_rng};
+
+use Direction::*;
 
 use crate::draw::draw_block;
 
@@ -26,11 +30,7 @@ impl Direction {
     }
 }
 
-use Direction::*;
-use rand::{thread_rng, Rng};
-
 /// Board game block
-
 #[derive(Clone)]
 struct Block {
     x: i32,
@@ -49,7 +49,7 @@ pub struct Snake {
 
 impl Snake {
     /// Create new snake within coords supplied
-    pub fn new(low_x: i32, high_x:i32, low_y:i32, high_y: i32) -> Snake {
+    pub fn new(low_x: i32, high_x: i32, low_y: i32, high_y: i32) -> Snake {
         let mut rng = thread_rng();
         let x = rng.gen_range(low_x, high_x - 2);
         let y = rng.gen_range(low_y, high_y);
