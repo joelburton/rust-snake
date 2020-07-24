@@ -1,6 +1,3 @@
-extern crate rand;
-extern crate piston_window;
-
 mod draw;
 mod snake;
 mod game;
@@ -18,13 +15,14 @@ fn main() {
     let (width, height) = (20,  20);
     let mut window: PistonWindow = WindowSettings::new(
         "Snake",
-        [to_coord_u32(width), to_coord_u32(height)],
+        [to_coord(width) as u32, to_coord(height) as u32],
     ).exit_on_esc(true)
         .build()
         .unwrap();
 
     let mut game = Game::new(width, height);
 
+    // main event loop for the game
     while let Some(event) = window.next() {
         if let Some(Button::Keyboard(key)) = event.press_args() {
             game.key_pressed(key);

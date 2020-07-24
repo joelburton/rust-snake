@@ -15,6 +15,7 @@ pub enum Direction {
 }
 
 impl Direction {
+    /// Returns opposite direction of one given
     pub fn opposite(&self) -> Direction {
         match *self {
             Direction::Up => Direction::Down,
@@ -31,6 +32,10 @@ struct Block {
     y: i32,
 }
 
+/// Snake.
+/// - direction: Direction snake will move next move
+/// - body: Linked list of blocks for body
+/// - tail: current tail block of the snake (or None)
 pub struct Snake {
     direction: Direction,
     body: LinkedList<Block>,
@@ -50,18 +55,22 @@ impl Snake {
         }
     }
 
+    /// Draw each block of snake
     pub fn draw(&self, con: &Context, g: &mut G2d) {
         for block in &self.body {
             draw_block(SNAKE_COLOR, block.x, block.y, con, g);
         }
     }
 
+    /// Return game board coords of snake head
     pub fn head_position(&self) -> (i32, i32) {
         let head_block = self.body.front().unwrap();
         (head_block.x, head_block.y)
     }
 
+    /// Move snake forward: adds new head, trims tail
     pub fn move_forward(&mut self, dir: Option<Direction>) {
+        // If direction given, switch -- else will move in same direction
         match dir {
             Some(d) => self.direction = d,
             None => (),
@@ -80,10 +89,12 @@ impl Snake {
         self.tail = Some(removed_block);
     }
 
+    /// Getter for snake direction
     pub fn head_direction(&self) -> Direction {
         self.direction
     }
 
+    /// Location for next head, given current direction
     pub fn next_head(&self, dir: Option<Direction>) -> (i32, i32) {
         let (head_x, head_y) = self.head_position();
 

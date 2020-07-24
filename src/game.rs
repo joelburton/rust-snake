@@ -3,7 +3,7 @@ use piston_window::types::Color;
 
 use rand::{thread_rng, Rng};
 
-use crate::snake::{Direction, Snake};  // TODO: why "crate"?
+use crate::snake::{Direction, Snake};
 use crate::draw::{draw_block, draw_rectangle};
 
 const FOOD_COLOR: Color = [0.8,0.0,0.0,1.0];
@@ -41,6 +41,7 @@ impl Game {
         }
     }
 
+    /// if arrow key pressed, update snake direction & move snake
     pub fn key_pressed(&mut self, key: Key) {
         if self.game_over {
             return
@@ -54,14 +55,17 @@ impl Game {
             _ => return
         };
 
+        // snake can't make an immediate U turn
         if dir.unwrap() == self.snake.head_direction().opposite() {
             return;
         }
 
+        // immediately move snake --- snake also moves every "tick"
         self.update_snake(dir);
     }
 
-    pub fn draw(&self, con: &Context, g: &mut G2d ) {
+    /// draw game board, snake and (if lost) red overlay
+    pub fn draw(&self, con: &Context, g: &mut G2d) {
         self.snake.draw(con, g);
 
         if self.food_exists {
@@ -78,6 +82,7 @@ impl Game {
         }
     }
 
+    /// a "tick": if time, move snake/restart/add food
     pub fn update(&mut self, delta_time: f64) {
         self.waiting_time += delta_time;
 
@@ -97,6 +102,7 @@ impl Game {
         }
     }
 
+    /// if on food, consume it & lengthen snake
     fn check_eating(&mut self) {
         let (head_x, head_y) = self.snake.head_position();
         if self.food_exists && self.food_x == head_x && self.food_y == head_y {
@@ -105,6 +111,7 @@ impl Game {
         }
     }
 
+    /// Return T/F for living snake: dies from intersecting self or hitting wall
     fn check_if_snake_alive(&self, dir: Option<Direction>) -> bool {
         let (next_x, next_y) = self.snake.next_head(dir);
 
@@ -115,6 +122,7 @@ impl Game {
         next_x > 0 && next_y > 0 && next_x < self.width - 1 && next_y < self.height - 1
     }
 
+    /// Adds a random food item to board
     fn add_food(&mut self) {
         let mut rng = thread_rng();
 
@@ -131,6 +139,7 @@ impl Game {
         self.food_exists = true;
     }
 
+    /// update snake on move/tick: decide if dead or eaten, and move
     fn update_snake(&mut self, dir: Option<Direction>) {
         if self.check_if_snake_alive(dir) {
             self.snake.move_forward(dir);
@@ -141,6 +150,8 @@ impl Game {
         self.waiting_time = 0.0;
     }
 
+    /// Restart game
+    // FIXME: should we just make a new game?
     fn restart(&mut self) {
         self.snake = Snake::new(2, 2);
         self.waiting_time = 0.0;
