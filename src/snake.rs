@@ -39,11 +39,11 @@ struct Block {
 /// Snake.
 /// - direction: Direction snake will move next move
 /// - body: Linked list of blocks for body
-/// - tail: current tail block of the snake (or None)
+/// - grow_tail: grow tail once (did we just eat food)
 pub struct Snake {
     direction: Direction,
     body: LinkedList<Block>,
-    tail: Option<Block>,
+    grow_tail: bool,
 }
 
 impl Snake {
@@ -55,7 +55,7 @@ impl Snake {
         Snake {
             direction: Direction::Right,
             body,
-            tail: None,
+            grow_tail: false,
         }
     }
 
@@ -88,9 +88,15 @@ impl Snake {
             Left => Block { x: last_x - 1, y: last_y },
             Right => Block { x: last_x + 1, y: last_y },
         };
+
         self.body.push_front(new_block);
-        let removed_block = self.body.pop_back().unwrap();
-        self.tail = Some(removed_block);
+
+        // if we just ate food, we will grow by not popping last
+        if !self.grow_tail {
+            self.body.pop_back();
+        } else {
+            self.grow_tail = false;
+        }
     }
 
     /// Getter for snake direction
@@ -118,11 +124,7 @@ impl Snake {
 
     /// "Grow" snake
     pub fn grow_snake(&mut self) {
-        // This just adds a new block at same place as the current tail ---
-        // so when snake moves and the tail is snipped, the current tail
-        // will still be there, so the snake "grows".
-        let blk = self.tail.clone().unwrap();
-        self.body.push_back(blk);
+        self.grow_tail = true;
     }
 
     /// Does cell at given coords intersect with snake?
